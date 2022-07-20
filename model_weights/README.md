@@ -1,0 +1,2 @@
+### Downloading Pretrained Models
+We provide downloads for pretrained models of SpOT. To download them, visit this [link](https://drive.google.com/drive/folders/1S7r7vR43GzDVRLXnK9RVleV2YbMMzDKp?usp=sharing). Place all downloaded models in this folder.

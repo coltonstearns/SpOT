@@ -1,0 +1,230 @@
+
+# ================== GENERAL PARAMETERS =====================
+general:
+  batch_size: 200
+  data_root: ./data/waymo-centerpoint-preprocessed
+  dataset_name: waymo
+  evaluation:
+    nuscenes-path: ''
+    nuscenes-version: ''
+    waymo-gt-file: ./data/gt.bin
+    waymo-tracking-eval-executable: ./third_party/waymo-open-dataset/bazel-bin/waymo_open_dataset/metrics/tools/compute_tracking_metrics_main
+  lr: 0.002
+  max_pnts_per_batch: 900000
+  object_class: pedestrian
+  only_val: false
+  only_viz: false
+  out: ./out/waymo_ped
+  parallel: false
+  weights: ./model_weights/ped-final-waymo.pth
+
+
+# ==================== BACKBONE CONFIGURATION ===============
+backbone:
+  architecture: pointnet-4detr
+  bbox-backbone: vote
+  group-norm: false
+  size_pct_thresh: 1.0
+  use-input-box-size: false
+
+  in-out-features:
+    augment-pairs: true
+    augment-quad: true
+    pointnet-feat-size: 256
+    transformer-feat-size: 256
+
+  transformer-args:
+    enc_activation: relu
+    enc_dim: 256
+    enc_dropout: 0.1
+    enc_ffn_dim: 128
+    enc_nhead: 4
+    enc_nlayers: 4
+    fps_max_points: 10
+    fps_min_points: 5
+    fps_sample_ratio: 0.5
+    posenc_style: concat-xyzt
+    radius:
+      car: 1.5
+      motorcycle: 0.7
+      pedestrian: 0.6
+      vehicle: 1.5
+    use_attention: true
+
+
+
+# ==================== DATA AUGMENTATION CONFIGURATION ===============
+data_augmentation:
+  bbox-rotation-noise:
+  - -0.2
+  - 0.2
+  bbox-rotation-noise-per-frame:
+  - -0.1
+  - 0.1
+  bbox-scale-noise:
+  - 0.9
+  - 1.1
+  bbox-translation-noise:
+  - -0.15
+  - 0.15
+  bbox-translation-noise-per-frame:
+  - -0.1
+  - 0.1
+  point-rotation-noise:
+  - -1.57
+  - 1.57
+  point-scale-noise:
+  - 0.95
+  - 1.05
+  train-augment: true
+  train-augment-bboxes: true
+  train-shift-augment: true
+
+
+
+
+# ==================== TRAINING DATALOADING CONFIGURATION ===============
+training_dataloading:
+  dataset-properties:
+    dataset-source: waymo
+    tracking-mode: false
+    use-zipfile: true
+  sequence-filters:
+    confidence-threshold: 0.0
+    min-frame-pts: 1
+    min-labeled-pts: 1
+    min-seq-pts: 1
+    only-moving-objects: false
+    overlap-threshold: 8
+    permitted-frame-skips: 13
+    val-confidence-threshold: 0.6
+  sequence-properties:
+    allow-false-positive-frames: true
+    backward: false
+    ego-correct-coordinates: true
+    max-num-pts: 256
+    min-keyframes: 2
+    seqs-span-many-keyframes: true
+    sequence-length: 15
+
+
+
+# ==================== TESTING DATALOADING CONFIGURATION ===============
+testing_dataloading:
+  dataset-properties:
+    dataset-source: waymo
+    tracking-mode: true
+    use-zipfile: true
+  sequence-filters:
+    confidence-threshold: 0.0
+    min-frame-pts: 1
+    min-labeled-pts: 1
+    min-seq-pts: 1
+    only-moving-objects: false
+    overlap-threshold: 1
+    permitted-frame-skips: 1
+  sequence-properties:
+    allow-false-positive-frames: true
+    backward: false
+    ego-correct-coordinates: true
+    max-num-pts: 256
+    min-keyframes: 1
+    seqs-span-many-keyframes: false
+    sequence-length: 1
+
+
+# ================== TRAINING LOSSES ======================
+losses:
+  other:
+    classification-temperature:
+      pedestrian: 2.4
+      vehicle: 1.2
+    classification-worst-ratio:
+      pedestrian: 0.85
+      vehicle: 0.7
+  usage:
+    bbox-regression: true
+    classification: true
+    segmentation-loss: true
+  weight:
+    bbox-center-height-residuals: 7.0
+    bbox-center-xy-residuals: 8.0
+    bbox-regress-size-bin: 0.8
+    bbox-size-residuals: 8.0
+    bbox-velocity-residuals: 4.0
+    bbox-yaw-residuals: 8.0
+    classification: 1.0
+    segmentation-loss: 5.0
+
+
+
+# ==================== SCHEDULING =============================
+scheduling:
+  data-loading:
+    num-workers: 8
+  logging:
+    print-every: 10
+    save-every: 2
+    track-every: 6
+    val-every: 2
+  optimizer:
+    betas:
+    - 0.9
+    - 0.999
+    decay: 0.95
+    epochs: 200
+    eps: 1.0e-08
+    type: adam
+  other:
+    train-autoregressive: true
+
+
+
+# ================== TRACK ASSOCIATION PARAMS ======================
+track_association:
+  box-affinity:
+    distance-metric: l2
+    iou-threshold: 0.05
+    l2-distance-thresholds:
+      bicycle: 3
+      bus: 5.5
+      car: 4
+      motorcycle: 13
+      pedestrian: 0.4
+      trailer: 3
+      truck: 4
+      vehicle: 0.8
+  matching:
+    algorithm: greedy
+    compare-which-frames: earliest-detection
+    greedy-sort-by: detections
+
+
+
+# ================== TRACK MANAGEMENT PARAMS ======================
+track_management:
+  nms:
+    threshold: 0.5
+    when: before-refinement
+  refinement:
+    age-refinement-threshold: 2
+    auto-regressive-refinement: true
+    confidence-anneal-rate: 1.0
+    confidence-refinement-threshold: 0.0
+    refinement-components: confidences-and-boxes
+    refinement-strategy: tracks-only
+  track-maintenance:
+    max-seq-pts: null
+    max-time-window: 1.0
+    min-hits-usability: 0
+    no-hits-kill-thresh: 3
+    track-initialization-conf-thresh: 0.6
+
+
+
+# ================== TRACKING MOTION-MODEL PARAMS ======================
+track_motion_model:
+  relative_time_context: 0.4
+  time_context: 1.5
+
+
