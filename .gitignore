@@ -1,0 +1,17 @@
+.idea/
+data/nuScenes
+data/nuscenes-preprocessed
+pretrained_weights/
+*__pycache__/
+.eggs
+*.egg-info
+build
+*.so
+*.ipynb_checkpoints
+*wandb/
+out/
+configs/track-sweeps*
+model_weights
+data
+!data/README.md
+!data/download_data.sh
