@@ -187,33 +187,33 @@ class WaymoConverter(object):
         success, box_points = points_in_box_regions(associated_boxes, points, self.box_context_scale_factor)
 
         # visualize:
-        point_cloud = o3d.geometry.PointCloud()
-        point_cloud_points = o3d.utility.Vector3dVector(points[:, :3])
-        point_cloud.points = point_cloud_points
-        point_cloud_colors = np.array([[0.6, 0.6, 0.6]]).repeat(points.shape[0], axis=0)
-
-        # get 3d rotation matrix
-        o3d_boxes = []
-        global hash2idx
-        colors = [(0.00784313725490196, 0.24313725490196078, 1.0), (1.0, 0.48627450980392156, 0.0), (0.10196078431372549, 0.788235294117647, 0.2196078431372549), (0.9098039215686274, 0.0, 0.043137254901960784), (0.5450980392156862, 0.16862745098039217, 0.8862745098039215), (0.9098039215686274, 0.0, 0.043137254901960784)]
-        for i, pred in enumerate(frame_predictions):
-            center = pred.center
-            if str(pred.instance_id) not in hash2idx.keys():
-                clr_idx = len(hash2idx)
-                hash2idx[str(pred.instance_id)] = len(hash2idx)
-            else:
-                clr_idx = hash2idx[str(pred.instance_id)]
-
-            clr = list(colors[clr_idx % len(colors)])
-            orient = Quaternion(axis=[1, 0, 0], angle=pred.orientation.item()).rotation_matrix
-            wlh = pred.wlh  # size (3,1)
-            viz_box = o3d.geometry.OrientedBoundingBox(center=center, R=orient, extent=wlh)
-            viz_box.color = np.array(clr)
-            points_in_box_idxs = viz_box.get_point_indices_within_bounding_box(point_cloud_points)
-            point_cloud_colors[np.array(points_in_box_idxs)] = np.array([clr]).repeat(len(points_in_box_idxs), axis=0)
-            o3d_boxes.append(viz_box)
-        point_cloud.colors = o3d.utility.Vector3dVector(point_cloud_colors)
-        o3d.visualization.draw_geometries([point_cloud] + o3d_boxes)
+        # point_cloud = o3d.geometry.PointCloud()
+        # point_cloud_points = o3d.utility.Vector3dVector(points[:, :3])
+        # point_cloud.points = point_cloud_points
+        # point_cloud_colors = np.array([[0.6, 0.6, 0.6]]).repeat(points.shape[0], axis=0)
+        #
+        # # get 3d rotation matrix
+        # o3d_boxes = []
+        # global hash2idx
+        # colors = [(0.00784313725490196, 0.24313725490196078, 1.0), (1.0, 0.48627450980392156, 0.0), (0.10196078431372549, 0.788235294117647, 0.2196078431372549), (0.9098039215686274, 0.0, 0.043137254901960784), (0.5450980392156862, 0.16862745098039217, 0.8862745098039215), (0.9098039215686274, 0.0, 0.043137254901960784)]
+        # for i, pred in enumerate(frame_predictions):
+        #     center = pred.center
+        #     if str(pred.instance_id) not in hash2idx.keys():
+        #         clr_idx = len(hash2idx)
+        #         hash2idx[str(pred.instance_id)] = len(hash2idx)
+        #     else:
+        #         clr_idx = hash2idx[str(pred.instance_id)]
+        #
+        #     clr = list(colors[clr_idx % len(colors)])
+        #     orient = Quaternion(axis=[1, 0, 0], angle=pred.orientation.item()).rotation_matrix
+        #     wlh = pred.wlh  # size (3,1)
+        #     viz_box = o3d.geometry.OrientedBoundingBox(center=center, R=orient, extent=wlh)
+        #     viz_box.color = np.array(clr)
+        #     points_in_box_idxs = viz_box.get_point_indices_within_bounding_box(point_cloud_points)
+        #     point_cloud_colors[np.array(points_in_box_idxs)] = np.array([clr]).repeat(len(points_in_box_idxs), axis=0)
+        #     o3d_boxes.append(viz_box)
+        # point_cloud.colors = o3d.utility.Vector3dVector(point_cloud_colors)
+        # o3d.visualization.draw_geometries([point_cloud] + o3d_boxes)
 
 
         return success, associated_boxes, box_points

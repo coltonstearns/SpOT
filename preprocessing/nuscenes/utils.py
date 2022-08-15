@@ -491,6 +491,42 @@ def load_gt_local(nusc: NuScenes, eval_split: str, box_cls, verbose: bool = Fals
 
     return all_annotations
 
+
+def dump_gt_to_json(annotations):
+    from nuscenes.eval.tracking.utils import category_to_tracking_name
+    nusc_annos = {}
+    for sample_token in annotations.sample_tokens:
+        annos = []
+        for i, box in enumerate(annotations[sample_token]):
+            tracking_name = category_to_tracking_name(box.name)
+            if not tracking_name:
+                continue
+            nusc_anno = dict(
+            sample_token=sample_token,
+            translation=box.translation,
+            size=box.size,
+            rotation=box.rotation,
+            velocity=box.velocity.tolist(),
+            tracking_name=category_to_tracking_name(box.name),
+            tracking_score=1.0,
+            tracking_id=str(box.instance_token))
+            annos.append(nusc_anno)
+        nusc_annos[sample_token] = annos
+
+    modality = dict(
+        use_camera=False,
+        use_lidar=True,
+        use_radar=False,
+        use_map=False,
+        use_external=False)
+
+    nusc_submissions = {
+        'meta': modality,
+        'results': nusc_annos,
+    }
+    return nusc_submissions
+
+
 def box_angular_velocity(nusc, sample_annotation_token: str, max_time_diff: float = 1.5):
     """
     Estimate the angular velocity for an annotation.
