@@ -63,8 +63,6 @@ def load_data(data_root, data_source, split, object_class, only_baseline, datalo
     i = 0
     scenes_objects, scenes_ignored_objects = [], []
     for scene_file in tqdm(sorted(glob.glob(osp.join(data_root, split, "*.json")))):
-        if i > 5:
-            break
         with open(scene_file, "rb") as f:
             scene_data = json.load(f)
         scene_io = SceneIO(scene_id=None)
