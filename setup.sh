@@ -8,15 +8,21 @@ source ${CONDA_PATH}/bin/activate ${CONDA_ENV_NAME}
 
 # install pytorch and other requirements
 yes | pip install numpy
-conda install pytorch==1.9.0 torchvision==0.10.0 cudatoolkit=11.1 -c pytorch -c conda-forge -y
+#conda install pytorch==1.9.0 torchvision==0.10.0 cudatoolkit=11.1 -c pytorch -c conda-forge -y
+pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f https://download.pytorch.org/whl/torch_stable.html
 yes | pip install -r requirements.txt
 
 # install MMCV as base-package for some CUDA kernels in third_party/
+yes | pip install cython==0.29.33
 yes | pip install mmcv-full==1.4.0 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html
 yes | pip install mmdet==2.11.0
 
 # install pytorch-geometric and pytorch3d
-conda install pyg==2.0.3 -c pyg -c conda-forge -y
+#conda install pyg==2.0.3 -c pyg -c conda-forge -y
+yes | pip install torch-scatter==2.0.2 -f https://data.pyg.org/whl/torch-1.9.1+cu111
+yes | pip install torch-cluster==1.6.3
+yes | pip install torch-sparse
+pip install torch-geometric -f https://data.pyg.org/whl/torch-1.9.0+cu111.html
 conda install -c fvcore -c iopath -c conda-forge fvcore iopath -y
 conda install -c bottler nvidiacub -y
 conda install pytorch3d==0.6.2 -c pytorch3d -y

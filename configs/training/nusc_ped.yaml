@@ -136,8 +136,10 @@ losses:
   other:
     classification-temperature:
       car: 0.75
+      pedestrian: 1.0
     classification-worst-ratio:
       car: 0.7
+      pedestrian: 0.85
   usage:
     bbox-regression: true
     classification: true

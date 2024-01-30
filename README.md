@@ -70,10 +70,41 @@ python spot/test.py --config=configs/reported_eval/waymo_reported_pedestrian.yam
 
 
 ## Training
-Coming soon...
+The [`spot/train.py`] script is used to train a new SSR model. Refer to the `configs` directory and the [writeup](https://arxiv.org/pdf/2207.05856.pdf)
+for complete details on hyperparameters. During training, model checkpoints are
+be saved to output directory specified in the config's `general.out` field. Here are some examples.
+
+#### nuScenes Dataset
+To train a sequence refinement module on the nuScenes `cars` class run:
+
+```
+python spot/train.py --config=configs/training/nusc_car.yaml --general.out=./out/nusc_car_training
+```
+
+To train a model on the nuScenes `pedestrian` class run:
+
+```
+python spot/train.py --config=configs/training/nusc_ped.yaml --general.out=./out/nusc_ped_training
+```
+
+#### Waymo Open Dataset
+
+To train a sequence refinement module on the Waymo `vehicles` class run:
+
+```
+python spot/train.py --config=configs/training/waymo_vehicle.yaml --general.out=./out/waymo_vehicle_training
+```
+
+To train a sequence refinement module on the Waymo `pedestrian` class run:
+
+```
+python spot/train.py --config=configs/training/waymo_ped.yaml --general.out=./out/waymo_ped_training
+```
+
+> Note that we trained of four A100 GPUs. If you have less GPU resources, please lower the batch size config parameter (e.g. `general.batch_size`).
 
 ## Installation Step by Step
-Coming soon...
+Please refer to the `setup.sh` file, and run the commands in order. Note that the `setup.sh` file assumes you have installed anaconda and have a conda environment named `spot_env`. If you do not have anaconda, you can install it [here](https://www.anaconda.com/).
 
 ## Data Preprocessing
 We suggest using the provided preprocessed datasets under the <b>Downloads</b> section. Still, this section will explain how to preprocess data from the official nuScenes and Waymo datasets. Because the nuScenes and Waymo datasets are large, and our preprocessing extracts all single-object sequences, expect preprocessing to take at least 24 hours per dataset.
