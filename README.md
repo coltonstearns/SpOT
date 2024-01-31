@@ -21,6 +21,7 @@ Note that we use [Weights and Biases](https://wandb.ai/) for visualizations and 
 The Waymo Open Dataset uses a separate evaluation pipeline that must be compiled with [Bazel](https://bazel.build/). In order to evaluate on Waymo, clone the [waymo toolkit](https://bazel.build/) into `third_party/` and follow the repo instructions to compile all Bazel scripts. Place the compiled tracking-evaluation script at:
 `./third_party/waymo-open-dataset/bazel-bin/waymo_open_dataset/metrics/tools/compute_tracking_metrics_main`
 
+For more instructions, mmdetection3d offers detailed steps [here](https://mmdetection3d.readthedocs.io/en/v0.18.1/datasets/waymo_det.html).
 
 ## Downloads
 #### Preprocessed Datasets
