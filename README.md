@@ -89,6 +89,10 @@ python spot/train.py --config=configs/training/nusc_ped.yaml --general.out=./out
 ```
 
 #### Waymo Open Dataset
+When training on the Waymo dataset, use the `waymo-centerpoint-cthresh0.6-preprocessed` data
+to reproduce our pretrained model. This only trains on detections CenterPoint predicted with high confidence.
+However, when evaluating, use the `waymo-centerpoint-preprocessed` data, because
+only this data contains _all_ CenterPoint instance predictions.
 
 To train a sequence refinement module on the Waymo `vehicles` class run:
 
