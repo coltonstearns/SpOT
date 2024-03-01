@@ -4,7 +4,7 @@ matplotlib==3.1.3
 opencv-python==4.3.0.38
 ninja==1.9.0.post1
 ipympl
-wandb
+wandb==0.13.0
 plotly
 pyquaternion
 k3d==2.12.0

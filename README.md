@@ -5,8 +5,6 @@ This is the official implementation for the ECCV 2022 oral presentation [SpOT](h
 ![SpOT Teaser](media/teaser.png)
 
 
-#### **CURRENTLY BEING UPDATED. PLEASE BE PATIENT.**
-
 ## Quick Installation
 
 #### Python Environment
@@ -22,6 +20,34 @@ The Waymo Open Dataset uses a separate evaluation pipeline that must be compiled
 `./third_party/waymo-open-dataset/bazel-bin/waymo_open_dataset/metrics/tools/compute_tracking_metrics_main`
 
 For more instructions, mmdetection3d offers detailed steps [here](https://mmdetection3d.readthedocs.io/en/v0.18.1/datasets/waymo_det.html).
+
+
+## Running in Docker
+The SpOT environment can be challenging to install on some devices, so we have included a Dockerfile. To run
+SpOT in Docker, first install [docker](https://docs.docker.com/engine/install/ubuntu/) with
+[Nvidia Container](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#next-steps).
+Importantly, do NOT install Docker through Snap (instead install through apt) - installing through snap is incompatible
+with nvidia-container.
+
+Then, create a Docker Image from the DockerFile
+`sudo docker image build -t spot .`
+
+Finally, you can run an interactive Docker job using the docker image:
+`sudo docker run --rm --runtime=nvidia --gpus all -it spot /bin/bash`
+
+Unfortunately, due to some CUDA incompatabilities, not ALL the packages could be successfully installed when creating
+the Docker image. Thus, before running any code, make sure to install the following once **inside** the docker
+image:
+- Navigate to `/workspace/spot` and run `python setup.py develop`
+- Next, run `pip install numpy==1.19.2 --no-cache-dir`. This will say the numpy version is incompatible, but we ignore this warning.
+- Finally, navigate to `/workspace/spot/third_party/pointnet2` and run `pip install .`
+
+After this, you can navigate back to `/workspace/spot` and run the code!
+
+> Note: Our docker image copies all files in this repository into the Docker workspace. Thus, to copy data and 
+> pretrained weights, please make sure that data is in the `data` folder and weights are in the `model_weights`
+> folder. Additionally, docker does not copy the contents of symlinks, so make sure these are folders are NOT
+> symlinks.
 
 ## Downloads
 #### Preprocessed Datasets
